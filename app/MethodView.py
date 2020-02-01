@@ -70,7 +70,7 @@ class SuperView(MethodView):
             obj_id = self.db[self.resource].insert_one(data).inserted_id
         except errors.DuplicateKeyError:
             return {"status": 400, "detail": self.resource + " already exists"}, 400
-        return self.db.user.find_one({"_id": obj_id}, self.projection), 200
+        return self.db[self.resource].find_one({"_id": obj_id}, self.projection), 200
 
     def update(self, obj_id, data):
         obj_id = convertToObjectId(obj_id)
@@ -79,7 +79,7 @@ class SuperView(MethodView):
         result = self.db[self.resource].update_one({"_id": obj_id}, {'$set': data})
         if not result.matched_count:
             return {"status": 400, "detail": self.resource + " not found"}, 400
-        return self.db.user.find_one({"_id": obj_id}, self.projection), 200
+        return self.db[self.resource].find_one({"_id": obj_id}, self.projection), 200
 
     def remove(self, obj_id):
         obj_id = convertToObjectId(obj_id)
@@ -93,6 +93,7 @@ class SuperView(MethodView):
 
     def retrieve(self, obj_id):
         obj_id = convertToObjectId(obj_id)
+        print("retrive {}".format(obj_id))
         if not obj_id:
             return {"status": 400, "detail": "Invalid " + self.resource + " id"}, 400
         result = self.db[self.resource].find_one({"_id": obj_id}, self.projection)
@@ -101,9 +102,10 @@ class SuperView(MethodView):
         return result, 200
 
     # To-DO add sorting, filtering
-    def retrieveAll(self):
-        result = list(self.db[self.resource].find(None, self.projection))
+    def retrieveAll(self,body):
+        result = list(self.db[self.resource].find(body, self.projection))
         if not result:
             return {"status": 400, "detail": self.resource + " not found"}, 400
         return result, 200
+
 

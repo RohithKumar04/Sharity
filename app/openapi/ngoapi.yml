@@ -1,0 +1,159 @@
+ngo:
+    get:
+      summary: List all ngos
+      tags:
+        - ngos
+      parameters:
+        - name: city
+          in: query
+          required: false
+          description: to filter ngo by city
+          schema:
+            type: string
+        - name: name
+          in: query
+          required: false
+          description: to filter ngo by name
+          schema:
+            type: string
+        - name: requiredItem
+          in: query
+          required: false
+          description: to filter ngo by item required
+          schema:
+            type: string
+        - name: lowerLimit
+          in: query
+          required: false
+          description: to filter ngo by no of people present
+          schema:
+            type: integer       
+        - name: upperLimit
+          in: query
+          required: false
+          description: to filter ngo by no of people present
+          schema:
+            type: integer    
+      responses:
+        '200':
+          description: An paged array of ngos
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                    $ref: "./schemas.yml#/schemas/Ngo"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yml#/schemas/Error"
+    post:
+      summary: Create a ngo
+      tags:
+        - ngos
+      requestBody:
+        description: add ngo to the system
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas.yml#/schemas/Ngo"
+      responses:
+        '200':
+          description: User record interpreted by backend
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yml#/schemas/Ngo"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yml#/schemas/Error"
+
+ngo/{ngoId}:
+    get:
+      summary: Info for a specific ngo
+      tags:
+        - ngos
+      parameters:
+        - name: ngoId
+          in: path
+          required: true
+          description: The id of the ngo to retrieve
+          schema:
+            type: string
+      responses:
+        '401':
+          description: Authorization information is missing or invalid.
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yml#/schemas/Ngo"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yml#/schemas/Error"
+
+    put:
+      summary: Update a ngo
+      tags:
+        - ngos
+      parameters:
+        - name: ngoId
+          in: path
+          required: true
+          description: The id of the ngo to update
+          schema:
+            type: string
+      requestBody:
+        description: ngo data to update
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas.yml#/schemas/UserEditable"
+      responses:
+        '200':
+          description: User record interpreted by backend
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yml#/schemas/Ngo"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yml#/schemas/Error"
+
+    delete:
+      summary: Delete a ngo
+      tags:
+        - ngos
+      parameters:
+        - name: ngoId
+          in: path
+          required: true
+          description: The id of the ngo to delete
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Null response
+          content:
+            application/json:
+              schema:
+                  $ref: "./schemas.yml#/schemas/Delete"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yml#/schemas/Error"
+

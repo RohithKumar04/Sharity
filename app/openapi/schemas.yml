@@ -174,9 +174,11 @@ schemas:
           createdDate:
             type: "string"
             format: "date-time"
+            readOnly: true
           completedDate:
             type: "string"
             format: "date-time"
+            readOnly: true
           completedBy:
             type: "string"
             format: "email"
@@ -242,6 +244,7 @@ schemas:
         minimum: 0
       donatedList:
         type: "array"
+        readOnly: true
         items:
           type: "object"
           properties:

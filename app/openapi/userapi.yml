@@ -1,8 +1,21 @@
 user:
-    get:
+    get: 
       summary: List all users
       tags:
         - users
+      parameters:
+        - name: name
+          in: query
+          required: false
+          description: find user by name
+          schema:
+            type: string
+        - name: phoneNumber
+          in: query
+          required: false
+          description: find user by name
+          schema:
+            type: string
       responses:
         '200':
           description: An paged array of users
@@ -12,6 +25,12 @@ user:
                 type: "array"
                 items:
                     $ref: "./schemas.yml#/schemas/User"
+        '404':
+          description: Authorization information is missing or invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yml#/schemas/Error"
         default:
           description: unexpected error
           content:
@@ -35,6 +54,12 @@ user:
             application/json:
               schema:
                 $ref: "./schemas.yml#/schemas/User"
+        '404':
+          description: Authorization information is missing or invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yml#/schemas/Error"
         default:
           description: unexpected error
           content:
