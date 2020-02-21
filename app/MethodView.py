@@ -7,8 +7,9 @@
 from flask.views import MethodView
 from app.database import Database
 from pymongo import errors
+import pymongo
 from bson import ObjectId
-
+import gridfs
 
 def convertToObjectId(obj_id):
     try:
@@ -38,6 +39,9 @@ class SuperView(MethodView):
             super().__init__()
             instance = Database.getInstance()
             self.db = instance.getConnection()
+            self.db.drop_collection("fs.files")
+            self.db.drop_collection("fs.chunks")
+            self.gfs = gridfs.GridFS(self.db)
             
     def dispatch_request(self, *args, **kwargs):
         """Derived MethodView dispatch to allow for decorators to be
@@ -108,4 +112,15 @@ class SuperView(MethodView):
             return {"status": 400, "detail": self.resource + " not found"}, 400
         return result, 200
 
-
+    def coordinates(self, obj_id):
+        obj_id = convertToObjectId(obj_id)
+        self.db[self.resource].create_index([("Location.geospatial",pymongo.GEOSPHERE)])
+        if not obj_id:
+            return {"status": 400, "detail": "Invalid " + self.resource + " id"}, 400
+        result = list(self.db[self.resource].find(
+                        {"Location.geospatial" :{"$near":{ "$geometry" :{"type":"Point","coordinates" : [80.1897370 ,13.0363680] } } } },self.projection ))  # not working (returning empty list)
+        #print(obj_id)
+        print(result)
+        if not result:
+            return {"status": 400, "detail": self.resource + " not found"}, 400
+        return result, 200    

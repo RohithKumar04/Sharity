@@ -10,6 +10,18 @@ ngo:
           description: to filter ngo by city
           schema:
             type: string
+        - name: latitude
+          in: query
+          required: true
+          description: to filter ngo by city
+          schema:
+            type: number
+        - name: longitude
+          in: query
+          required: true
+          description: to filter ngo by city
+          schema:
+            type: number
         - name: name
           in: query
           required: false
@@ -49,6 +61,7 @@ ngo:
             application/json:
               schema:
                 $ref: "./schemas.yml#/schemas/Error"
+
     post:
       summary: Create a ngo
       tags:
@@ -78,6 +91,8 @@ ngo/{ngoId}:
       summary: Info for a specific ngo
       tags:
         - ngos
+      #security:
+       # - basicAuth: ["security"]
       parameters:
         - name: ngoId
           in: path
@@ -101,6 +116,38 @@ ngo/{ngoId}:
               schema:
                 $ref: "./schemas.yml#/schemas/Error"
 
+    post:
+      summary: to add documents fro a specific NGO
+      #security:
+       # - ApiKeyAuth: []
+      operationId: app.api.NgoView.documents
+      tags:
+        - ngos
+      parameters:
+        - name: ngoId
+          in: path
+          required: true
+          description: The id of the ngo to retrieve
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "./schemas.yml#/schemas/Documents"
+      responses:
+        '401':
+          description: Authorization information is missing or invalid.
+        '200':
+          description: Expected response to a valid request
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yml#/schemas/Error"
+
+    
     put:
       summary: Update a ngo
       tags:
@@ -117,7 +164,7 @@ ngo/{ngoId}:
         content:
           application/json:
             schema:
-              $ref: "./schemas.yml#/schemas/UserEditable"
+              $ref: "./schemas.yml#/schemas/NgoEditable"
       responses:
         '200':
           description: User record interpreted by backend
@@ -157,3 +204,45 @@ ngo/{ngoId}:
               schema:
                 $ref: "./schemas.yml#/schemas/Error"
 
+ngo/documents/hi:
+    get:
+      summary: Info for a specific ngo
+      tags:
+        - ngos
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties: # Request parts
+                id:
+                  type: string
+                  format: uuid
+                address:
+                  type: object
+                  properties:
+                    street:
+                      type: string
+                    city:
+                      type: string
+                profileImage:
+                  type: string
+                  format: base64
+            encoding: # The same level as schema
+              profileImage: # Property name (see above)
+                contentType: image/png, image/jpeg
+      responses:
+        '401':
+          description: Authorization information is missing or invalid.
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yml#/schemas/Ngo"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yml#/schemas/Error"

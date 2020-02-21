@@ -1,9 +1,7 @@
 auth/{user_id}:
     get:
       summary: Return JWT token
-      tags: 
-        - auth
-      #operationId: "generatetoken"
+      #operationId: app.generate_token
       parameters:
       - name: user_id
         description: User unique identifier
@@ -19,10 +17,10 @@ auth/{user_id}:
             'text/plain':
               schema:
                 type: string
-
 secret:
     get:
       summary: Return secret string
+      operationId: app.api.AuthView.damnit
       responses:
         '200':
           description: secret response

@@ -129,7 +129,17 @@ schemas:
         type: "string"
       longitute:
         type: "string"
-        
+      geospatial:
+        type: "object"
+        properties:
+          type:
+            type: "string"
+            example: "Point"
+          coordinates:
+            type: "array"
+            items:
+              type: "number"
+
         
   BankDetails:
     type: "object"
@@ -149,16 +159,22 @@ schemas:
     properties:
       Doc-12Aform: 
         type: "string"
+        format: "binary"
       Doc-PanCard-Ngo:
         type: "string"
+        format: "binary"
       Doc-PanCard-owner:
         type: "string"
+        format: "binary"
       Doc-IDproof-owner:
         type: "string"
+        format: "binary"
       Doc-80TaxDecductionCertificate:
         type: "string"
+        format: "binary"
       Doc-cancelledCheckLeaf:
         type: "string"
+        format: "binary"
 
   
   requirement:
@@ -184,7 +200,7 @@ schemas:
             format: "email"
             description: "Email of donated user"
             
-  Type:
+  NgoType:
     description: "Type of Ngo"
     type: "string"
     
@@ -224,7 +240,7 @@ schemas:
       description:
         type: "string"
       type:
-        $ref: "#schemas/Type"
+        $ref: "#schemas/NgoType"
       tags:
         type: "array"
         items:
@@ -276,7 +292,34 @@ schemas:
     items:
       $ref: "#schemas/Ngo"
     
-      
+  NgoEditable:
+      type: "object"
+
+      properties:
+        email:
+          type: "string"
+          format: "email"
+        password:
+          type: "string"
+          format: "password"
+          writeOnly: true
+        phone:
+          type: "string"
+          pattern: '^\d{10}$'
+        description:
+          type: "string"
+        ngotype:
+          $ref: "#schemas/NgoType"
+        tags:
+          type: "array"
+          items:
+            $ref: "#schemas/Tag"
+        numberOfPeopleStaying:
+          type: "integer"
+          minimum: 1
+        location:
+          $ref: "#schemas/Location"
+   
   Transaction:
     type: "array"
     items:
